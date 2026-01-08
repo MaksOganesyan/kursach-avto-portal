@@ -83,8 +83,7 @@ class Model(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return f'{self.brand} {self.name}'
-
+        return self.name
 
 class Car(models.Model):
     # Объявления о продаже автомобилей
@@ -163,8 +162,7 @@ class Car(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'{self.brand} {self.model} ({self.year}) - {self.price} ₽'
-
+        return f'{self.model} ({self.year}) - {self.price} ₽'
 
 class CarPhoto(models.Model):
     # Фотографии автомобиля

@@ -1,0 +1,40 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    <h1 style="font-size: 2.2rem; margin-bottom: 1rem; color: #2c3e50;">
+    {{ car.model }} ({{ car.year }})
+</h1>
+
+    {% if car.main_image_url %}
+        <img src="{{ car.main_image_url }}" alt="{{ car }}" style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 12px; margin-bottom: 2rem;">
+    {% endif %}
+
+    <p style="font-size: 1.4rem;"><strong>Цена:</strong> <span style="color: #27ae60; font-weight: bold;">{{ car.price|floatformat:0 }} ₽</span></p>
+    <p style="font-size: 1.2rem;"><strong>Пробег:</strong> {{ car.mileage|default:"не указан" }} км</p>
+    <p style="font-size: 1.1rem; margin: 1rem 0;"><strong>Продавец:</strong> {{ car.user.username }}</p>
+
+    <hr style="margin: 2rem 0;">
+
+    <h2 style="font-size: 1.6rem; margin-bottom: 1rem;">Описание</h2>
+    <p style="white-space: pre-line; line-height: 1.8;">{{ car.description|linebreaks }}</p>
+
+    {% if photos %}
+    <h2 style="font-size: 1.6rem; margin: 2rem 0 1rem;">Дополнительные фото</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+        {% for photo in photos %}
+            <img src="{{ photo.image_url }}" alt="Доп. фото" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if user == car.user %}
+    <div style="margin-top: 3rem;">
+        <a href="{% url 'core:car_update' car.pk %}" class="btn" style="background-color: #f39c12;">Редактировать</a>
+        <a href="{% url 'core:car_delete' car.pk %}" class="btn" style="background-color: #e74c3c; margin-left: 1rem;">Удалить</a>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'core:car_list' %}" style="display: inline-block; margin-top: 2rem; color: #3498db;">← Назад к списку</a>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    <h1 style="font-size: 2rem; margin-bottom: 2rem; color: #2c3e50; text-align: center;">
+        {% if form.instance.pk %}Редактировать объявление{% else %}Добавить объявление{% endif %}
+    </h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_brand" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Марка:</label>
+            <select name="brand" id="id_brand" class="form-select" required>
+                <option value="">---------</option>
+                {% for brand in brands %}
+                    <option value="{{ brand.id }}" {% if form.instance.brand.id == brand.id %}selected{% endif %}>
+                        {{ brand.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_model" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Модель:</label>
+            <select name="model" id="id_model" class="form-select" required>
+                <option value="">---------</option>
+                {% for model in models %}
+                    <option value="{{ model.id }}" data-brand="{{ model.brand.id }}"
+                        {% if form.instance.model.id == model.id %}selected{% endif %}>
+                        {{ model.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Остальные поля -->
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_year" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Год выпуска:</label>
+            {{ form.year }}
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_mileage" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Пробег, км:</label>
+            {{ form.mileage }}
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_price" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Цена:</label>
+            {{ form.price }}
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_description" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Описание:</label>
+            {{ form.description }}
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_main_image_url" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Основное фото (URL):</label>
+            {{ form.main_image_url }}
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_status" style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">Статус объявления:</label>
+            {{ form.status }}
+        </div>
+
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-success" style="font-size: 1.2rem; padding: 0.8rem 2rem;">
+                Сохранить
+            </button>
+            <a href="{% url 'core:car_list' %}" style="margin-left: 1rem; color: #3498db;">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    var modelsByBrand = {};
+    $('#id_model option[data-brand]').each(function() {
+        var option = $(this);
+        var brandId = option.data('brand');
+        if (!modelsByBrand[brandId]) {
+            modelsByBrand[brandId] = [];
+        }
+        modelsByBrand[brandId].push({
+            value: option.val(),
+            text: option.text(),
+            selected: option.is(':selected')
+        });
+    });
+
+    $('#id_brand').change(function() {
+        var brandId = $(this).val();
+        var modelSelect = $('#id_model');
+        
+        modelSelect.empty();
+        modelSelect.append('<option value="">---------</option>');
+        
+        if (brandId && modelsByBrand[brandId]) {
+            modelsByBrand[brandId].forEach(function(model) {
+                var selected = model.selected ? 'selected' : '';
+                modelSelect.append('<option value="' + model.value + '" ' + selected + '>' + model.text + '</option>');
+            });
+        }
+    });
+
+    $('#id_brand').trigger('change');
+});
+</script>
+{% endblock %}
