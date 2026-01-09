@@ -91,7 +91,7 @@ class CarAdmin(ImportExportModelAdmin):
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except (TypeError, AttributeError):
                     pass
             adjusted_width = (max_length + 2)
             ws.column_dimensions[column].width = adjusted_width
@@ -112,6 +112,7 @@ class CarAdmin(ImportExportModelAdmin):
     def price_formatted(self, obj):
         return f'{obj.price} ₽'
     price_formatted.short_description = _('Цена')
+
 
 @admin.register(CarPhoto)
 class CarPhotoAdmin(admin.ModelAdmin):

@@ -1,6 +1,7 @@
 from import_export import resources, fields
 from .models import Car
 
+
 class CarResource(resources.ModelResource):
     id = fields.Field(attribute='id', column_name='ID')
     brand_name = fields.Field(attribute='brand__name', column_name='Марка автомобиля')
