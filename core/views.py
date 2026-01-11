@@ -6,12 +6,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, CarForm
 
+
 class CarListView(ListView):
     model = Car
     template_name = 'core/car_list.html'
     context_object_name = 'cars'
     queryset = Car.objects.filter(status='active').order_by('-created_at')
-    paginate_by = 10
+    paginate_by = 3
 
 
 class CarDetailView(DetailView):
