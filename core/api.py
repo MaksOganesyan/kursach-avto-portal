@@ -6,7 +6,7 @@ from .models import Car, Brand
 from .serializers import CarSerializer, BrandSerializer
 
 
-# Api щбъявления
+# Api объявления
 class CarViewSet(viewsets.ModelViewSet):
     queryset = Car.objects.filter(status='active').select_related('brand', 'model', 'user')
     serializer_class = CarSerializer
@@ -38,7 +38,7 @@ class CarViewSet(viewsets.ModelViewSet):
 
     # Дешёвые тачки GET /api/cars/cheap/
     @action(detail=False, methods=['get'], url_path='cheap')
-    def cheap(self):
+    def cheap(self, request):
         qs = self.get_queryset().filter(price__lte=1000000)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
@@ -52,7 +52,7 @@ class CarViewSet(viewsets.ModelViewSet):
         return Response({'message': 'Просмотр засчитан', 'views': car.views})
 
 
-#  API для марок автомобилей
+#  API для марок автомобилей api/brands/
 class BrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all().order_by('name')
     serializer_class = BrandSerializer
